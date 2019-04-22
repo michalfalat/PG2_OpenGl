@@ -108,6 +108,7 @@ public:
 	float roughness( const Coord2f * tex_coord = nullptr ) const;
 
 	Color3f emission( const Coord2f * tex_coord = nullptr ) const;
+	int material_index{ 0 };
 
 public:
 	Color3f ambient_; /*!< RGB barva prostøedí \f$\left<0, 1\right>^3\f$. */

@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "matrix4x4.h"
 #include "glutils.h"
+#include "mymath.h"
 
 Rasterizer::Rasterizer(const int width, const int height, const float fov_y, const Vector3 view_from, const Vector3 view_at)
 {
@@ -167,7 +168,13 @@ int Rasterizer::initBuffers() {
 			// vertices loop
 			for (int j = 0; j < 3; ++j, ++k)
 			{
-				vertices[k] = triangle.vertex(j);
+				Vertex v = triangle.vertex(j);
+				v.material_index = surface->get_material()->material_index;
+				vertices[k] = v;
+				if (v.material_index > 0) {
+					int a = 0;
+				}
+				//vertic
 			} // end of vertices loop
 
 		} // end of triangles loop
@@ -220,16 +227,18 @@ int Rasterizer::realeaseDevice() {
 
 int Rasterizer::RenderFrame() {
 	glBindVertexArray(vao);
+	float a = deg2rad(45);
 	while (!glfwWindowShouldClose(window))
 	{
 		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // state setting function
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // state using function
 
 		Matrix4x4 model;
-		model.set(0, 0, 1);
-		model.set(1, 1, 1);
-		model.set(2, 2, 1);
-		model.set(3, 3, 1);
+		model.set(0, 0, cosf(a));
+		model.set(0, 1, -sinf(a));
+		model.set(1, 0, sinf(a));
+		model.set(1, 1, cosf(a));
+		a += 1e-2f;
 
 		Matrix4x4 mvp = camera.projectionMatrix * camera.viewMatrix * model;
 		Matrix4x4 mvn = model * camera.viewMatrix;
