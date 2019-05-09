@@ -22,9 +22,13 @@ void Rasterizer::initMaterials() {
 	struct GLMaterial
 	{
 		Color3f diffuse; // 3 * 4B
-		GLbyte pad0[4]; // + 4 B = 16 B
+		GLbyte pad0[4];
+		Color3f specular;
+		GLbyte pad1[4];
+		Color3f ambient;
+		GLbyte pad2[4];
 		GLuint64 tex_diffuse_handle{ 0 }; // 1 * 8 B
-		GLbyte pad1[8]; // + 8 B = 16 B
+		GLbyte pad3[8];
 	};
 #pragma pack( pop )
 
@@ -35,7 +39,7 @@ void Rasterizer::initMaterials() {
 		if (tex_diffuse) {
 			GLuint id = 0;
 			CreateBindlessTexture(id, gl_materials[m].tex_diffuse_handle, tex_diffuse->width(), tex_diffuse->height(), tex_diffuse->data_);
-			gl_materials[m].diffuse = Color3f{ 1.0f, 1.0f, 1.0f }; // white diffuse color
+			gl_materials[m].diffuse = Color3f{ 0.5f, 0.5f, 0.5f }; // white diffuse color
 		}
 		else {
 			GLuint id = 0;
@@ -230,7 +234,7 @@ int Rasterizer::RenderFrame() {
 	float a = deg2rad(45);
 	while (!glfwWindowShouldClose(window))
 	{
-		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // state setting function
+		 glClearColor(0.3f, 0.4f, 0.4f, 1.0f); // state setting function
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // state using function
 
 		Matrix4x4 model;
@@ -249,6 +253,7 @@ int Rasterizer::RenderFrame() {
 		//glDrawArrays( GL_TRIANGLES, 0, vertices / );
 		//glDrawArrays( GL_POINTS, 0, 3 );
 		glDrawArrays(GL_TRIANGLES, 0, no_triangles * 3);
+
 		//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0); // optional - render from an index buffer
 
 		glfwSwapBuffers(window);
